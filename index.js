@@ -3,8 +3,11 @@ const app = new express()
 const path = require('path')
 const ejs = require('ejs')
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser')
 
 app.use(express.static('public'))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended:true}))
 
 app.set('view engine','ejs')
 
@@ -34,3 +37,7 @@ app.get('/posts/new', (req,res) => {
   res.render('create');
 })
 
+app.post('/posts/store',(req,res)=>{
+	console.log(req.body)
+	res.redirect('/')
+})
