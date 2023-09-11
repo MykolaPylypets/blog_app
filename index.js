@@ -1,3 +1,5 @@
+const storeUserController = require('./controllers/storeUser')
+const newUserController = require('./controllers/newUser')
 const validateMiddleware = require("./middleware/validationMiddleware")
 const homeController = require('./controllers/home')
 const storePostController = require('./controllers/storePost')
@@ -32,3 +34,7 @@ app.get('/post/:id',getPostController)
 app.get('/posts/new', newPostController)
 
 app.post('/posts/store', storePostController)
+
+app.get('/auth/register', newUserController)
+
+app.post('/users/register', storeUserController)
