@@ -6,11 +6,18 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const BlogPost = require('./models/BlogPost.js')
 const fileUpload = require('express-fileupload')
+const validateMiddleWare = (req,res,next)=>{
+if(req.files == null || req.body.title === "" || req.body.body === ""){
+    return res.redirect('/posts/new')
+	}
+	next()
+}
 
 app.use(express.static('public'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(fileUpload())
+app.use('/posts/store',validateMiddleWare)
 
 app.set('view engine','ejs')
 
