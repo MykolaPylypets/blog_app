@@ -1,3 +1,4 @@
+const flash = require('connect-flash')
 const logoutController = require('./controllers/logout')
 const redirectIfAuthenticatedMiddleware = require('./middleware/redirectIfAuthenticatedMiddleware')
 const authMiddleware = require('./middleware/authMiddleware')
@@ -34,6 +35,8 @@ app.use("*", (req, res, next) => {
 	loggedIn = req.session.userId;
 	next()
 });
+
+app.use(flash());
 
 app.set('view engine','ejs')
 
