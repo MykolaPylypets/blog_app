@@ -1,3 +1,7 @@
+const logoutController = require('./controllers/logout')
+const redirectIfAuthenticatedMiddleware = require('./middleware/redirectIfAuthenticatedMiddleware')
+const authMiddleware = require('./middleware/authMiddleware')
+const expressSession = require('express-session')
 const loginUserController = require('./controllers/loginUser')
 const loginController = require('./controllers/login')
 const storeUserController = require('./controllers/storeUser')
@@ -14,11 +18,22 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const fileUpload = require('express-fileupload')
 
+global.loggedIn = null;
+
 app.use(express.static('public'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(fileUpload())
 app.use('/posts/store',validateMiddleware)
+
+app.use(expressSession({
+secret: 'keyboard cat'
+}))
+
+app.use("*", (req, res, next) => {
+	loggedIn = req.session.userId;
+	next()
+});
 
 app.set('view engine','ejs')
 
@@ -33,14 +48,18 @@ app.get('/',homeController)
 
 app.get('/post/:id',getPostController)
 
-app.get('/posts/new', newPostController)
+app.get('/posts/new', authMiddleware, newPostController)
 
-app.post('/posts/store', storePostController)
+app.post('/posts/store', authMiddleware, storePostController)
 
-app.get('/auth/register', newUserController)
+app.get('/auth/register', redirectIfAuthenticatedMiddleware, newUserController)
 
-app.post('/users/register', storeUserController)
+app.post('/users/register', redirectIfAuthenticatedMiddleware, storeUserController)
 
-app.get('/auth/login', loginController)
+app.get('/auth/login', redirectIfAuthenticatedMiddleware, loginController)
 
-app.post('/users/login',loginUserController)
+app.post('/users/login', redirectIfAuthenticatedMiddleware, loginUserController)
+
+app.get('/auth/logout', logoutController)
+
+app.use((req, res) => res.render('notfound'));
