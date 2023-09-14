@@ -4,6 +4,7 @@ const User = require('../models/User')
 module.exports = (req, res) =>{
   const { username, password } = req.body;
   req.session.message = [];
+  req.flash('data', req.body);
   console.log(req.body);
   User.findOne({ username: username })
     .then((user) => {
@@ -18,6 +19,7 @@ module.exports = (req, res) =>{
               req.session.message[1] = "Provide Password"
 	    }
             else { req.session.message[1] = "Password is incorrect" }
+            req.flash('message', req.session.message);
             res.redirect('/auth/login')
           }
         })
@@ -32,6 +34,7 @@ module.exports = (req, res) =>{
 	else {
 	  req.session.message[0] = "Username is incorrect"
 	}
+        req.flash('message', req.session.message);
         res.redirect('/auth/login')
       }
     })
