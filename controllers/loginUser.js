@@ -3,6 +3,8 @@ const User = require('../models/User')
 
 module.exports = (req, res) =>{
   const { username, password } = req.body;
+  req.session.message = [];
+  console.log(req.body);
   User.findOne({ username: username })
     .then((user) => {
       if(user) {
@@ -12,11 +14,24 @@ module.exports = (req, res) =>{
             res.redirect('/')
           }
           else {
+            if(password === "") {
+              req.session.message[1] = "Provide Password"
+	    }
+            else { req.session.message[1] = "Password is incorrect" }
             res.redirect('/auth/login')
           }
         })
       }
       else {
+        if(username === "" && password === "") {
+	    req.session.message = ["Provide Username", "Provide Password"];
+	}
+	else if(username === "") {
+	  req.session.message[0] = ["Provide Username"]
+	}
+	else {
+	  req.session.message[0] = "Username is incorrect"
+	}
         res.redirect('/auth/login')
       }
     })
