@@ -4,5 +4,6 @@ module.exports = (req, res) =>{
       createPost: true
     })
   }
+  console.log(req.session);
   res.redirect('/auth/login')
 }

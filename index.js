@@ -2,7 +2,7 @@ const flash = require('connect-flash')
 const logoutController = require('./controllers/logout')
 const redirectIfAuthenticatedMiddleware = require('./middleware/redirectIfAuthenticatedMiddleware')
 const authMiddleware = require('./middleware/authMiddleware')
-const expressSession = require('express-session')
+const session = require('express-session')
 const loginUserController = require('./controllers/loginUser')
 const loginController = require('./controllers/login')
 const storeUserController = require('./controllers/storeUser')
@@ -28,8 +28,19 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.use(fileUpload())
 app.use('/posts/store',validateMiddleware)
 
-app.use(expressSession({
-secret: 'keyboard cat'
+app.set('trust proxy', 1)
+app.use(session({
+  secret: 'keyboard cat',
+  saveUninitialized: true,
+  cookie: { 
+	  maxAge: 120000,
+    secure: true,
+    httpOnly: true,
+    sameSite: 'none',
+    domain: '.fuzzy-cod-lapel.cyclic.cloud',
+    path: '/'
+  },
+  resave: false
 }))
 
 app.use("*", (req, res, next) => {
