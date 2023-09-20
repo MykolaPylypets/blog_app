@@ -18,6 +18,7 @@ const ejs = require('ejs')
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const fileUpload = require('express-fileupload')
+const port = 5000;
 
 global.loggedIn = null;
 
@@ -40,10 +41,10 @@ app.use(flash());
 
 app.set('view engine','ejs')
 
-mongoose.connect('mongodb://localhost/my_database', {useNewUrlParser: true} )
+mongoose.connect('mongodb+srv://user2342:3qLXK4569dFQAFrk@atlascluster.vaf9gzv.mongodb.net/my_database', {useNewUrlParser: true} )
 
-app.listen(4000, ()=>{
-  console.log('App listening on port 4000')
+app.listen(process.env.PORT || port, ()=>{
+  console.log('App listening on port 5000')
 })
 
 
